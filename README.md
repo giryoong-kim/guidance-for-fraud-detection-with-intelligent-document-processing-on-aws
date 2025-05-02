@@ -1,215 +1,292 @@
-# Guidance Title (required)
 
-The Guidance title should be consistent with the title established first in Alchemy.
+# Guidance for Fraud Detection with Intelligent Document Processing on AWS
 
-**Example:** *Guidance for Product Substitutions on AWS*
+## Table of Contents
 
-This title correlates exactly to the Guidance it’s linked to, including its corresponding sample code repository. 
-
-
-## Table of Contents (required)
-
-List the top-level sections of the README template, along with a hyperlink to the specific section.
-
-### Required
-
-1. [Overview](#overview-required)
+1. [Overview](#overview)
+    - [AWS Services](#aws-services)
     - [Cost](#cost)
-2. [Prerequisites](#prerequisites-required)
-    - [Operating System](#operating-system-required)
-3. [Deployment Steps](#deployment-steps-required)
-4. [Deployment Validation](#deployment-validation-required)
-5. [Running the Guidance](#running-the-guidance-required)
-6. [Next Steps](#next-steps-required)
-7. [Cleanup](#cleanup-required)
+2. [Prerequisites](#prerequisites)
+    - [Operating System](#operating-system)
+3. [Deployment Steps](#deployment-steps)
+4. [Deployment Validation](#deployment-validation)
+5. [Running the Guidance](#running-the-guidance)
+6. [Next Steps](#next-steps)
+7. [Cleanup](#cleanup)
+
+## Overview
+Financial institutions face multifaceted challenges in modern claims processing, primarily stemming from the overwhelming 
+influx of unstructured data (documents, images, videos, and audio recordings) that lacks predefined schema and standardized 
+processing frameworks. <br/>
+This solution focuses on automating multi-modal documents processing in insurance clasims. It extracts data from document forms, images and audio files and flow them through machine learning models and GenAI to derive insights to produce reports in both of human and machine readable formats.
+
+![Architecture](doc/architecture.png)
+
+### AWS Services
+This solution consists of following key components:
+* Amazon Bedrock Data Automation (BDA): A GenAI-powered capability of Bedrock that streamlines the extraction of valuable insights from unstructured, multimodal content like documents, images, audio, and videos. It is used for extract text from forms, extracting describtion of images and transcringing/summarizing audio clips from customer calls.
+* Amazon SageMaker AI: A cloud-based machine learning(ML) platform that helps users build, train, and deploy ML models. The solution trains and deploys a document tampering detection model to SageMaker Endpoint for fraud-detection.
+* Amazon S3, AWS Lambda, AWS Step Functions and Amazon DynamoDB: These AWS serverless services combines AI/ML functionalies into a seamless workflows.<br/>
+<br/>
+
+### Cost
+The following table provides a sample cost breakdown for deploying this
+Guidance with the default parameters in the US East (N. Virginia) Region
+for one month.
+
+| **AWS service**   | Dimensions                                             | Monthly cost \[USD\] |
+| ----------------- | ------------------------------------------------------ | ---------------------------------------------- |
+| Amazon S3 Standard	| S3 Standard storage (50 GB per month)	| $1.15 |
+| Amazon S3 Data Transfer	| DT Inbound: Not selected (0 TB per month), DT Outbound: Not selected (0 TB per month)	| $0 |
+| Step Functions - Standard Workflows	| Workflow requests (100 per day), State transitions per workflow (10)	| $0.66 |
+| DynamoDB on-demand capacity | Table class (Standard), Average item size (all attributes) (1 KB), Data storage size (50 GB)	| $12.5 |
+| SageMaker Serverless Inference | Requests units (millions), Requests units (millions), Number of request per month (1), Duration of each request (ms) (3000)	| $360.00 |
+| Amazon Bedrock Nova Pro FM | Number of Input tokens (20 million per month), Number of output tokens (40 million per month)	| $144 |
+| Bedrock Data Automation for blueprints	| 5 documents per claim  1 image per claim documents 100 claims per day, using custom blueprints monthly cost	 | $1200 |
+| Total | | $1718.31 |
 
-***Optional***
+## Prerequisites
+<br/>
+- Python 3.10+<br/>
+- [AWS CDK CLI](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html)<br/>
+- [SageMaker AI execution IAM role](https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html)<br/>
+<br/>
 
-8. [FAQ, known issues, additional considerations, and limitations](#faq-known-issues-additional-considerations-and-limitations-optional)
-9. [Revisions](#revisions-optional)
-10. [Notices](#notices-optional)
-11. [Authors](#authors-optional)
+### Operating System
 
-## Overview (required)
+#### Python virtual environment
+To manually create a virtualenv on MacOS and Linux:
 
-1. Provide a brief overview explaining the what, why, or how of your Guidance. You can answer any one of the following to help you write this:
+```bash
+$ python3 -m venv .venv
+```
+## Deployment Steps
 
-    - **Why did you build this Guidance?**
-    - **What problem does this Guidance solve?**
+After the init process completes and the virtualenv is created, you can use the following
+step to activate your virtualenv.
 
-2. Include the architecture diagram image, as well as the steps explaining the high-level overview and flow of the architecture. 
-    - To add a screenshot, create an ‘assets/images’ folder in your repository and upload your screenshot to it. Then, using the relative file path, add it to your README. 
+```bash
+$ source .venv/bin/activate
+```
 
-### Cost ( required )
+If you are a Windows platform, you would activate the virtualenv like this:
 
-This section is for a high-level cost estimate. Think of a likely straightforward scenario with reasonable assumptions based on the problem the Guidance is trying to solve. Provide an in-depth cost breakdown table in this section below ( you should use AWS Pricing Calculator to generate cost breakdown ).
+```
+% .venv\Scripts\activate.bat
+```
 
-Start this section with the following boilerplate text:
+Once the virtualenv is activated, you can install the required dependencies.
 
-_You are responsible for the cost of the AWS services used while running this Guidance. As of <month> <year>, the cost for running this Guidance with the default settings in the <Default AWS Region (Most likely will be US East (N. Virginia)) > is approximately $<n.nn> per month for processing ( <nnnnn> records )._
+```bash
+$ pip install -r requirements.txt
+```
 
-Replace this amount with the approximate cost for running your Guidance in the default Region. This estimate should be per month and for processing/serving resonable number of requests/entities.
+### SageMaker AI Endpoint
+Open ```sagemaker/document-tampering-detection/config.ini``` and change the region parameter to desired value.
 
-Suggest you keep this boilerplate text:
-_We recommend creating a [Budget](https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html) through [AWS Cost Explorer](https://aws.amazon.com/aws-cost-management/aws-cost-explorer/) to help manage costs. Prices are subject to change. For full details, refer to the pricing webpage for each AWS service used in this Guidance._
+```ini
+[AWS]
+region = us-east-1
+```
 
-### Sample Cost Table ( required )
+<br/>
+Open a terminal and change the working directory to sagemaker/document-tampering-detection folder. Run a script as below.
 
-**Note : Once you have created a sample cost table using AWS Pricing Calculator, copy the cost breakdown to below table and upload a PDF of the cost estimation on BuilderSpace. Do not add the link to the pricing calculator in the ReadMe.**
+```bash
+$ cd sagemaker/document-tampering-detection
+$ python train_and_deploy.py
+```
 
-The following table provides a sample cost breakdown for deploying this Guidance with the default parameters in the US East (N. Virginia) Region for one month.
+The script will deploy a ML model to SageMaker AI endpoint with a name ```document-tampering-detection-v-DEMO```.
 
-| AWS service  | Dimensions | Cost [USD] |
-| ----------- | ------------ | ------------ |
-| Amazon API Gateway | 1,000,000 REST API calls per month  | $ 3.50month |
-| Amazon Cognito | 1,000 active users per month without advanced security feature | $ 0.00 |
+### Create Amazon Bedrock Data Automation(BDA) project and blueprints
+Open a terminal and change to directory ```bedrock_data_automation``` and run a script. 
 
-## Prerequisites (required)
+```bash
+$ cd bedrock_data_automation
+$ python bda_create_project.py
+```
 
-### Operating System (required)
+The script will produce a BDA project ARN at the end of execution.
 
-- Talk about the base Operating System (OS) and environment that can be used to run or deploy this Guidance, such as *Mac, Linux, or Windows*. Include all installable packages or modules required for the deployment. 
-- By default, assume Amazon Linux 2/Amazon Linux 2023 AMI as the base environment. All packages that are not available by default in AMI must be listed out.  Include the specific version number of the package or module.
+#### Edit config.ini
+Open ```config.ini``` file in the root of the project folder. Edit the values as required.
 
-**Example:**
-“These deployment instructions are optimized to best work on **<Amazon Linux 2 AMI>**.  Deployment in another OS may require additional steps.”
+```ini
+[BDA]
+projectArn = <Project ARN created from the above step>
 
-- Include install commands for packages, if applicable.
+[AWS]
+region = <AWS region>
 
+[SM_ENDPOINT]
+tampered_image_detection_endpoint = "document-tampering-detection-v-DEMO"
 
-### Third-party tools (If applicable)
+[NOTIFICATION]
+complete_notification_reciepients = <Comma seperated list of emails to recieve task completion notifications>
+```
 
-*List any installable third-party tools required for deployment.*
 
+### Deploy Backend Stacks
+From the root of the project folder, run following command to deploy a documents processing workflow.
 
-### AWS account requirements (If applicable)
+```bash
+$ cdk deploy InsuranceClaimProcessStack/InsuranceClaimProcessWorkflow
+```
 
-*List out pre-requisites required on the AWS account if applicable, this includes enabling AWS regions, requiring ACM certificate.*
+Then, deploy an API stack for the UI.
 
-**Example:** “This deployment requires you have public ACM certificate available in your AWS account”
+```bash
+$ cdk deploy InsuranceClaimProcessStack/InsuranceClaimProcessApi
+```
 
-**Example resources:**
-- ACM certificate 
-- DNS record
-- S3 bucket
-- VPC
-- IAM role with specific permissions
-- Enabling a Region or service etc.
+The above command will print out an URL for API endpoint at the end. For example:
 
+```
+Outputs:
+InsuranceClaimProcessStackInsuranceClaimProcessApiFBBB0A99.InsuranceClaimApiEndpointA00BCDE11 = https://abcdef.execute-api.us-east-1.amazonaws.com/dev/
+InsuranceClaimProcessStackInsuranceClaimProcessApiFBBB0A99.UserPoolClientId = xxxxxxxxxxxxxxxxxx
+InsuranceClaimProcessStackInsuranceClaimProcessApiFBBB0A99.UserPoolId = us-east-1_xxxxxxxx
+```
 
-### aws cdk bootstrap (if sample code has aws-cdk)
+Copy the URL printed from the out for the next step.
 
-<If using aws-cdk, include steps for account bootstrap for new cdk users.>
+### Deploy Front-end
+Open a file ```frontend/src/common/constants.js``` and paste the URL copied from the above step to API_ENDPOINT,COGNITO_USER_POOL_ID and COGNITO_USER_POOL_CLIENT_ID constant:
 
-**Example blurb:** “This Guidance uses aws-cdk. If you are using aws-cdk for first time, please perform the below bootstrapping....”
+```java
+export const API_ENDPOINT = "https://abcdef.execute-api.us-east-1.amazonaws.com/dev/";
+export const COGNITO_USER_POOL_ID = "us-east-1_xxxxxxxx";
+export const COGNITO_USER_POOL_CLIENT_ID = "xxxxxxxxxxxxxxxxxx";
+```
 
-### Service limits  (if applicable)
+Change to ```frontend``` folder and run a command to build a single page application.
 
-<Talk about any critical service limits that affect the regular functioning of the Guidance. If the Guidance requires service limit increase, include the service name, limit name and link to the service quotas page.>
+```bash
+$ cd frontend
+$ npm install
+$ npm run build
+```
 
-### Supported Regions (if applicable)
+After completion, change to the root of the project and deploy frontend UI stack using a CDK command.
 
-<If the Guidance is built for specific AWS Regions, or if the services used in the Guidance do not support all Regions, please specify the Region this Guidance is best suited for>
+```bash
+$ cdk deploy InsuranceClaimProcessStack/InsuranceClaimProcessFrontEnd
+```
 
+## Deployment Validation
 
-## Deployment Steps (required)
+At the end of the execution, following Output will be printed:
 
-Deployment steps must be numbered, comprehensive, and usable to customers at any level of AWS expertise. The steps must include the precise commands to run, and describe the action it performs.
+```
+Outputs:
+InsuranceClaimProcessStackInsuranceClaimProcessFrontEndDE27C08B.UIDomain = xxxxxxx.cloudfront.net
+```
 
-* All steps must be numbered.
-* If the step requires manual actions from the AWS console, include a screenshot if possible.
-* The steps must start with the following command to clone the repo. ```git clone xxxxxxx```
-* If applicable, provide instructions to create the Python virtual environment, and installing the packages using ```requirement.txt```.
-* If applicable, provide instructions to capture the deployed resource ARN or ID using the CLI command (recommended), or console action.
+Open the URL in UIDomain output from a browser, which will show a login page.
 
- 
-**Example:**
+## Running the Guidance
 
-1. Clone the repo using command ```git clone xxxxxxxxxx```
-2. cd to the repo folder ```cd <repo-name>```
-3. Install packages in requirements using command ```pip install requirement.txt```
-4. Edit content of **file-name** and replace **s3-bucket** with the bucket name in your account.
-5. Run this command to deploy the stack ```cdk deploy``` 
-6. Capture the domain name created by running this CLI command ```aws apigateway ............```
+1. The claims analyst uploads sample documents via the Web Client to the Amazon Simple Storage Service (Amazon S3) bucket for blueprint creation. 
 
+2. Amazon Bedrock Data Automation (Amazon BDA) uses JSON templates and Python scripts to create standardized blueprints for processing future claims file submissions.
 
+3. Amazon BDA refines and stores custom blueprints.
 
-## Deployment Validation  (required)
+4. Claims analysts upload claim document packets that include supporting materials such as claim forms, property damage pictures, identification documents, and audio files.
 
-<Provide steps to validate a successful deployment, such as terminal output, verifying that the resource is created, status of the CloudFormation template, etc.>
+5. An Amazon Step Functions (Claims Processing) workflow processes the submitted documents using the Amazon BDA blueprints published in step 2 to extract data.
 
+6. The automated process stores extracted insights from text documents, audio files, and image metadata in Amazon DynamoDB.
 
-**Examples:**
+7. A computer vision model hosted on Amazon SageMaker AI endpoints processes the submitted images to detect tampering, and stores the results in Amazon DynamoDB.
 
-* Open CloudFormation console and verify the status of the template with the name starting with xxxxxx.
-* If deployment is successful, you should see an active database instance with the name starting with <xxxxx> in        the RDS console.
-*  Run the following CLI command to validate the deployment: ```aws cloudformation describe xxxxxxxxxxxxx```
+8. Amazon Bedrock’s Nova Pro/Lite Foundational Model analyzes the data stored in Amazon DynamoDB to generate summary reports, which users can view in the web client.
 
+9. Amazon Bedrock processes the insights to generate customized reports for claims analysts or trigger automated notifications through Amazon Simple Notification Service (Amazon SNS) via Email Notification.
 
 
-## Running the Guidance (required)
+## Next Steps
+The solution streamlines the initial review process through automated completeness and validity checks, while generating custom blueprints for preliminary reports without requiring specialized ML expertise. BDA seamlessly integrates with existing fraud detection models on Amazon Sagemaker, incorporating sophisticated document tampering detection that analyzes multiple authentication factors including JPEG compression artifacts, edge inconsistencies, and EXIF metadata. 
 
-<Provide instructions to run the Guidance with the sample data or input provided, and interpret the output received.> 
+The plug-and-play nature of BDA enables organizations to easily tailor output requirements for diverse business needs and downstream system integration.
 
-This section should include:
+## Cleanup
+1. Destory CDK stacks
 
-* Guidance inputs
-* Commands to run
-* Expected output (provide screenshot if possible)
-* Output description
+```bash
+$ cdk destroy --all
+```
+2. Delete SageMaker Endpoint
 
+```bash
+$ aws sagemaker delete-endpoint --endpoint-name document-tampering-detection-v-DEMO
+```
 
+3. Delete Bedrock Data Automation Project
 
-## Next Steps (required)
+```bash
+$ aws bedrock-data-automation delete-data-automation-project --project-arn <Project ARN created from above steps>
+```
 
-Provide suggestions and recommendations about how customers can modify the parameters and the components of the Guidance to further enhance it according to their requirements.
+#### CDK Guideline
+This repository includes a project for CDK development with Python.
 
+The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
-## Cleanup (required)
+This project is set up like a standard Python project.  The initialization
+process also creates a virtualenv within this project, stored under the `.venv`
+directory.  To create the virtualenv it assumes that there is a `python3`
+(or `python` for Windows) executable in your path with access to the `venv`
+package. If for any reason the automatic creation of the virtualenv fails,
+you can create the virtualenv manually.
 
-- Include detailed instructions, commands, and console actions to delete the deployed Guidance.
-- If the Guidance requires manual deletion of resources, such as the content of an S3 bucket, please specify.
+To manually create a virtualenv on MacOS and Linux:
 
+```
+$ python3 -m venv .venv
+```
 
+After the init process completes and the virtualenv is created, you can use the following
+step to activate your virtualenv.
 
-## FAQ, known issues, additional considerations, and limitations (optional)
+```
+$ source .venv/bin/activate
+```
 
+If you are a Windows platform, you would activate the virtualenv like this:
 
-**Known issues (optional)**
+```
+% .venv\Scripts\activate.bat
+```
 
-<If there are common known issues, or errors that can occur during the Guidance deployment, describe the issue and resolution steps here>
+Once the virtualenv is activated, you can install the required dependencies.
 
+```
+$ pip install -r requirements.txt
+```
 
-**Additional considerations (if applicable)**
+At this point you can now synthesize the CloudFormation template for this code.
 
-<Include considerations the customer must know while using the Guidance, such as anti-patterns, or billing considerations.>
+```
+$ cdk synth
+```
 
-**Examples:**
+To add additional dependencies, for example other CDK libraries, just add
+them to your `setup.py` file and rerun the `pip install -r requirements.txt`
+command.
 
-- “This Guidance creates a public AWS bucket required for the use-case.”
-- “This Guidance created an Amazon SageMaker notebook that is billed per hour irrespective of usage.”
-- “This Guidance creates unauthenticated public API endpoints.”
 
+#### Repository Structure
+* insurance_claim_process_cdk
+A CDK project to deploy AWS resources of the solution excluding Amazon Bedrock Automation project and blueprints.
 
-Provide a link to the *GitHub issues page* for users to provide feedback.
+* bedrock_data_automation
+Code to create a BDA project and blueprints.
 
+* sagemaker/document-tampering-detection
+Contains code and image files to train and deploy a ML model to SageMaker Endpoint. The model is based on [AWS Machine Learning Blog](https://aws.amazon.com/blogs/machine-learning/train-and-host-a-computer-vision-model-for-tampering-detection-on-amazon-sagemaker-part-2/).
 
-**Example:** *“For any feedback, questions, or suggestions, please use the issues tab under this repo.”*
+* frontend
+React.js application for a frontend web page.
 
-## Revisions (optional)
-
-Document all notable changes to this project.
-
-Consider formatting this section based on Keep a Changelog, and adhering to Semantic Versioning.
-
-## Notices (optional)
-
-Include a legal disclaimer
-
-**Example:**
-*Customers are responsible for making their own independent assessment of the information in this Guidance. This Guidance: (a) is for informational purposes only, (b) represents AWS current product offerings and practices, which are subject to change without notice, and (c) does not create any commitments or assurances from AWS and its affiliates, suppliers or licensors. AWS products or services are provided “as is” without warranties, representations, or conditions of any kind, whether express or implied. AWS responsibilities and liabilities to its customers are controlled by AWS agreements, and this Guidance is not part of, nor does it modify, any agreement between AWS and its customers.*
-
-
-## Authors (optional)
-
-Name of code contributors

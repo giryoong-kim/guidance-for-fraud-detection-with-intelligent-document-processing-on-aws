@@ -1,0 +1,69 @@
+{
+    "class": "Vendor Estimate",
+    "description": "A vendor estimate document that outlines the scope of work and associated costs for various repair and construction services",
+    "definitions": {
+        "VENDOR_CONTACT_INFO": {
+            "properties": {
+                "phone": {
+                    "type": "string",
+                    "instruction": "The phone number for the vendor"
+                },
+                "email": {
+                    "type": "string",
+                    "instruction": "The email address for the vendor"
+                },
+                "address": {
+                    "type": "string",
+                    "instruction": "The physical address for the vendor"
+                }
+            }
+        },
+        "SCOPE_OF_WORK": {
+            "properties": {
+                "item": {
+                    "type": "string",
+                    "instruction": "The description of the work to be performed"
+                },
+                "cost": {
+                    "type": "number",
+                    "instruction": "The estimated cost for the specific work item"
+                },
+                "checkbox": {
+                    "type": "boolean",
+                    "instruction": "Indicates if the work item has been selected for completion"
+                }
+            }
+        }
+    },
+    "properties": {
+        "vendor_name": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "The name of the vendor providing the estimate"
+        },
+        "vendor_contact_information": {
+            "$ref": "#/definitions/VENDOR_CONTACT_INFO"
+        },
+        "estimate_number": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "The unique identifier for the vendor estimate"
+        },
+        "estimate_date": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "The date the vendor estimate was issued"
+        },
+        "scope_of_work": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/SCOPE_OF_WORK"
+            }
+        },
+        "total_cost": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "The total cost for all the work outlined in the estimate"
+        }
+    }
+}

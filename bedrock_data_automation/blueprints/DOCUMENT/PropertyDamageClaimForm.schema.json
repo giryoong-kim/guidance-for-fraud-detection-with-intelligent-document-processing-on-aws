@@ -1,0 +1,171 @@
+{
+    "class": "Property Damage Claim Form",
+    "description": "This is a blueprint for a property damage claim form",
+    "definitions": {
+        "CLAIMANT_DETAILS": {
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "instruction": "Full name of the claimant"
+                },
+                "address": {
+                    "type": "string",
+                    "instruction": "Address of the claimant"
+                },
+                "city": {
+                    "type": "string",
+                    "instruction": "City of the claimant"
+                },
+                "state": {
+                    "type": "string",
+                    "instruction": "State of the claimant"
+                },
+                "zip_code": {
+                    "type": "string",
+                    "instruction": "Zip code of the claimant"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "instruction": "Phone number of the claimant"
+                },
+                "email_address": {
+                    "type": "string",
+                    "instruction": "Email address of the claimant"
+                }
+            }
+        },
+        "INCIDENT_DETAILS": {
+            "properties": {
+                "date_of_incident": {
+                    "type": "string",
+                    "instruction": "Date when the incident occurred"
+                },
+                "time_of_incident": {
+                    "type": "string",
+                    "instruction": "Time when the incident occurred"
+                },
+                "location_of_incident": {
+                    "type": "string",
+                    "instruction": "Location where the incident occurred"
+                },
+                "incident_description": {
+                    "type": "string",
+                    "instruction": "Detailed description of the incident"
+                }
+            }
+        },
+        "PROPERTY_DETAILS": {
+            "properties": {
+                "property_type": {
+                    "type": "string",
+                    "instruction": "Type of property damaged"
+                },
+                "property_address": {
+                    "type": "string",
+                    "instruction": "Address of the damaged property"
+                },
+                "damage_description": {
+                    "type": "string",
+                    "instruction": "Detailed description of the property damage"
+                }
+            }
+        },
+        "INSURANCE_DETAILS": {
+            "properties": {
+                "insurance_company_name": {
+                    "type": "string",
+                    "instruction": "Name of the insurance company"
+                },
+                "policy_number": {
+                    "type": "string",
+                    "instruction": "Policy number of the claimant"
+                },
+                "insurance_agent_name": {
+                    "type": "string",
+                    "instruction": "Name of the insurance agent"
+                },
+                "insurance_agent_contact": {
+                    "type": "string",
+                    "instruction": "Contact information of the insurance agent"
+                }
+            }
+        },
+        "WITNESS_DETAILS": {
+            "properties": {
+                "witness_name": {
+                    "type": "string",
+                    "instruction": "Name of the witness"
+                },
+                "witness_contact": {
+                    "type": "string",
+                    "instruction": "Contact information of the witness"
+                },
+                "witness_relationship": {
+                    "type": "string",
+                    "instruction": "Relationship of the witness to the claimant"
+                },
+                "witness_statement": {
+                    "type": "string",
+                    "instruction": "Statement provided by the witness"
+                }
+            }
+        }
+    },
+    "properties": {
+        "claim_id": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Unique identifier for the claim"
+        },
+        "is_this_a_new_claim?": {
+            "type": "boolean",
+            "inferenceType": "explicit",
+            "instruction": "Indicates if this is a new claim or a previous claim"
+        },
+        "claimant_details": {
+            "$ref": "#/definitions/CLAIMANT_DETAILS"
+        },
+        "incident_details": {
+            "$ref": "#/definitions/INCIDENT_DETAILS"
+        },
+        "property_details": {
+            "$ref": "#/definitions/PROPERTY_DETAILS"
+        },
+        "insurance_details": {
+            "$ref": "#/definitions/INSURANCE_DETAILS"
+        },
+        "witness_details": {
+            "$ref": "#/definitions/WITNESS_DETAILS"
+        },
+        "estimated_repair_cost": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Estimated cost to repair the damaged property"
+        },
+        "estimated_property_value": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Estimated value of the damaged property"
+        },
+        "claimant_signature": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Signature of the claimant"
+        },
+        "signature_date": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Date when the claimant signed the form"
+        },
+        "witness_signature": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Signature of the witness, if applicable"
+        },
+        "witness_signature_date": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Date when the witness signed the form"
+        }
+    }
+}

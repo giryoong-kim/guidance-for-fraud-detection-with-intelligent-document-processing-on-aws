@@ -1,0 +1,138 @@
+{
+  "QueryLanguage": "JSONata",
+  "Comment": "A description of my state machine",
+  "StartAt": "List Claim Documents",
+  "States": {
+    "List Claim Documents": {
+      "Type": "Task",
+      "Arguments": {
+        "Bucket": "{% $states.input.inputBucket %}",
+        "Prefix": "{% $states.input.claimId %}"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:s3:listObjectsV2",
+      "Next": "Process Each Dcoument",
+      "Output": {
+        "listObjects": "{% $states.result.Contents %}",
+        "inputBucket": "{% $states.input.inputBucket %}",
+        "outputBucket": "{% $states.input.outputBucket %}",
+        "bdaProjectArn": "{% $states.input.bdaProjectArn %}",
+        "claimId": "{% $states.input.claimId %}"
+      }
+    },
+    "Process Each Dcoument": {
+      "Type": "Map",
+      "Items": "{% $states.input.listObjects %}",
+      "ItemSelector": {
+        "inputBucket": "{% $states.input.inputBucket %}",
+        "outputBucket": "{% $states.input.outputBucket %}",
+        "size": "{% $states.context.Map.Item.Value.Size %}",
+        "key": "{% $states.context.Map.Item.Value.Key %}",
+        "bdaProjectArn": "{%$states.input.bdaProjectArn%}",
+        "claimId": "{% $states.input.claimId %}"
+      },
+      "Output": {
+        "inputBucket": "{% $states.input.inputBucket %}",
+        "outputBucket": "{% $states.input.outputBucket %}",
+        "bdaProjectArn": "{% $states.input.bdaProjectArn %}",
+        "claimId": "{% $states.input.claimId %}"
+      },
+      "ItemProcessor": {
+        "ProcessorConfig": {
+          "Mode": "INLINE"
+        },
+        "StartAt": "Ingest",
+        "States": {
+          "Ingest": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::states:startExecution.sync:2",
+            "Arguments": {
+              "StateMachineArn": "arn:aws:states:<AWS_REGION>:<AWS_ACCOUNT>:stateMachine:insuranceclaim-Ingestion",
+              "Input": {
+                "StatePayload": "{% $states.input %}",
+                "AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID": "{% $states.context.Execution.Id %}"
+              }
+            },
+            "Next": "Validate & Transform",
+            "Output": "{% $merge([$states.input, {'documentType':$states.result.Output.documentType}])%}"
+          },
+          "Validate & Transform": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::states:startExecution.sync:2",
+            "Arguments": {
+              "StateMachineArn": "arn:aws:states:<AWS_REGION>:<AWS_ACCOUNT>:stateMachine:insuranceclaim-Validation-Transform",
+              "Input": {
+                "StatePayload": "{% $states.input%}",
+                "AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID": "{% $states.context.Execution.Id %}"
+              }
+            },
+            "Next": "Is this a picture?",
+            "Output": "{% $states.input %}"
+          },
+          "Is this a picture?": {
+            "Type": "Choice",
+            "Choices": [
+              {
+                "Next": "Fraud Detection- Tampered Image",
+                "Condition": "{% $states.input.documentType='Pictures' %}"
+              }
+            ],
+            "Default": "Insight Generation"
+          },
+          "Fraud Detection- Tampered Image": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::states:startExecution.sync:2",
+            "Arguments": {
+              "StateMachineArn": "arn:aws:states:<AWS_REGION>:<AWS_ACCOUNT>:stateMachine:insuranceclaim-FraudDetection",
+              "Input": {
+                "StatePayload": "{% $states.input %}",
+                "AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID": "{% $states.context.Execution.Id %}"
+              }
+            },
+            "Next": "Insight Generation"
+          },
+          "Insight Generation": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::states:startExecution.sync:2",
+            "Arguments": {
+              "StateMachineArn": "arn:aws:states:<AWS_REGION>:<AWS_ACCOUNT>:stateMachine:insuranceclaim-Validation-Transform",
+              "Input": {
+                "StatePayload": "Hello from Step Functions!",
+                "AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID": "{% $states.context.Execution.Id %}"
+              }
+            },
+            "Next": "Done"
+          },
+          "Done": {
+            "Type": "Succeed"
+          }
+        }
+      },
+      "Next": "Report Generation"
+    },
+    "Report Generation": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::states:startExecution.sync:2",
+      "Arguments": {
+        "StateMachineArn": "arn:aws:states:<AWS_REGION>:<AWS_ACCOUNT>:stateMachine:insuranceclaim-ReportGeneration",
+        "Input": {
+          "StatePayload": "{%$states.input%}",
+          "AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID": "{% $states.context.Execution.Id %}"
+        }
+      },
+      "Next": "Connect to Business Process",
+      "Output": "{%$states.input%}"
+    },
+    "Connect to Business Process": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::states:startExecution.sync:2",
+      "Arguments": {
+        "StateMachineArn": "arn:aws:states:<AWS_REGION>:<AWS_ACCOUNT>:stateMachine:insuranceclaim-ConnectToBusinessProcess",
+        "Input": {
+          "StatePayload": "{%$states.input %}",
+          "AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID": "{% $states.context.Execution.Id %}"
+        }
+      },
+      "End": true
+    }
+  }
+}
