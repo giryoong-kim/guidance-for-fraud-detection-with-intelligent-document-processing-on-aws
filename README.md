@@ -29,6 +29,18 @@ This solution consists of following key components:
 * Amazon S3, AWS Lambda, AWS Step Functions and Amazon DynamoDB: These AWS serverless services combines AI/ML functionalies into a seamless workflows.<br/>
 <br/>
 
+<details>
+  <summary>Note on dataset and Acceptable End User Policy from the model provider</summary>
+
+The dataset utilized in this guidance consists entirely of synthetic data. This artificial data is designed to mimic real-world information but does not contain any actual personal or sensitive information.
+
+For use cases related to finance and medical insurance as used in this guidance:
+
+Users must adhere to the model provider's Acceptable Use Policy at all times. This policy governs the appropriate use of the synthetic data and associated models, and compliance is mandatory.This synthetic data is provided for testing, development, and demonstration purposes only. It should not be used as a substitute for real data in making financial or medical decisions affecting individuals or organizations.
+By using this dataset and guidance, you acknowledge that you have read, understood, and agree to comply with all applicable terms, conditions, and policies set forth by the model provider.
+
+</details>
+
 ### Cost
 The following table provides a sample cost breakdown for deploying this
 Guidance with the default parameters in the US East (N. Virginia) Region
@@ -199,7 +211,7 @@ Open the URL in UIDomain output from a browser, which will show a login page.
 
 6. The automated process stores extracted insights from text documents, audio files, and image metadata in Amazon DynamoDB.
 
-7. A computer vision model hosted on Amazon SageMaker AI endpoints processes the submitted images to detect tampering, and stores the results in Amazon DynamoDB.
+7. A computer vision model hosted on Amazon SageMaker AI endpoints processes the submitted images to detect tampering, and stores the results in Amazon DynamoDB.The computer vision model, using Error Level Analysis (ELA) as a straightforward image forgery detection technique that works by examining compression differences across image regions. It effectively reveals tampering by highlighting areas where compression levels don't match, making manipulated sections visually obvious even to non-experts. ELA's main advantage is that it requires only the questioned image itself, works with common image formats, and needs no specialized equipment or original image for comparison. https://aws.amazon.com/blogs/machine-learning/train-and-host-a-computer-vision-model-for-tampering-detection-on-amazon-sagemaker-part-2/
 
 8. Amazon Bedrock’s Nova Pro/Lite Foundational Model analyzes the data stored in Amazon DynamoDB to generate summary reports, which users can view in the web client.
 
