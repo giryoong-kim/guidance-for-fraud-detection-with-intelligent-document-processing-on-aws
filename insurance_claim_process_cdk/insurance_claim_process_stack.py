@@ -23,6 +23,7 @@ class InsuranceClaimProcessStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
+        self.template_options.description = "Guidance for Fraud Detection with Intelligent Document Processing on AWS(SO9033)"
 
         workflow = Stack(self, "InsuranceClaimProcessWorkflow")
         stepfunctions = BaseSfnStateMachineStack(workflow, "InsuranceClaimProcessStepFunctions", config["BDA"]["projectArn"])
