@@ -1,0 +1,32 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "A blueprint for analyzing the content and elements of an advertisement image.",
+    "class": "Advertisement_Blueprint",
+    "type": "object",
+    "definitions": {},
+    "properties": {
+        "Frame_Sequence": {
+            "type": "array",
+            "inferenceType": "explicit",
+            "instruction": "The sequence of frames or images that make up the overall advertisement, from left to right and top to bottom.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "Window_Frame": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "The type and design of the window frame visible in the image."
+        },
+        "Outdoor_Setting": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "The outdoor environment or scenery visible through the window, such as greenery, natural elements, etc."
+        },
+        "Narrative_Progression": {
+            "type": "string",
+            "inferenceType": "inferred",
+            "instruction": "The overall narrative or story being conveyed through the sequence of frames in the advertisement."
+        }
+    }
+}

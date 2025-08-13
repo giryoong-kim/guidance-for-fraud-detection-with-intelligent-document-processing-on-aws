@@ -1,0 +1,226 @@
+{
+    "class": "Insurance Claim",
+    "description": "This is an insurance claim document that details the damages to a property and the associated repair costs.",
+    "properties": {
+        "insured_name": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Name of the insured person"
+        },
+        "property_address": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Address of the insured property"
+        },
+        "home_address": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Home address of the insured"
+        },
+        "claim_representative": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Name of the claim representative"
+        },
+        "estimator": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Name of the estimator"
+        },
+        "business_phone": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Business phone number of the insured"
+        },
+        "home_phone": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Home phone number of the insured"
+        },
+        "cellular_phone": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Cellular phone number of the insured"
+        },
+        "email": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Email address of the insured"
+        },
+        "claim_number": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Unique claim number associated with this claim"
+        },
+        "policy_number": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Policy number associated with this claim"
+        },
+        "loss_type": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Type of loss, e.g. Hail"
+        },
+        "date_contacted": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Date when the claim was first reported"
+        },
+        "date_of_loss": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Date when the loss occurred"
+        },
+        "date_inspected": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Date when the property was inspected"
+        },
+        "date_estimate_completed": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Date when the estimate was completed"
+        },
+        "date_received": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Date when the claim was received"
+        },
+        "date_entered": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Date when the claim was entered into the system"
+        },
+        "price_list": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Price list used for the estimate"
+        },
+        "estimate_name": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Name of the estimate"
+        },
+        "roof_surface_area": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total surface area of the roof"
+        },
+        "roof_perimeter_length": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total perimeter length of the roof"
+        },
+        "roof_squares": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Number of roof squares"
+        },
+        "roof_ridge_length": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total length of the roof ridge"
+        },
+        "interior_wall_area": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total area of the interior walls"
+        },
+        "exterior_wall_area": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total area of the exterior walls"
+        },
+        "exterior_wall_perimeter": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total perimeter of the exterior walls"
+        },
+        "floor_area": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total floor area"
+        },
+        "flooring_area": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total flooring area"
+        },
+        "floor_perimeter": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total perimeter of the floor"
+        },
+        "ceiling_perimeter": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total perimeter of the ceiling"
+        },
+        "line_item_total": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total of all line item costs"
+        },
+        "sales_tax": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total sales tax amount"
+        },
+        "subtotal": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Subtotal of line item costs and sales tax"
+        },
+        "overhead": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Overhead amount"
+        },
+        "profit": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Profit amount"
+        },
+        "replacement_cost_value": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total replacement cost value"
+        },
+        "depreciation": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total depreciation amount"
+        },
+        "actual_cash_value": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Actual cash value after depreciation"
+        },
+        "deductible": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Deductible amount"
+        },
+        "prior_payments": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total prior payments made"
+        },
+        "net_claim_remaining": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Net claim amount remaining"
+        },
+        "recoverable_depreciation": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Total recoverable depreciation amount"
+        },
+        "net_claim_remaining_with_depreciation": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "Net claim amount remaining if depreciation is recovered"
+        }
+    }
+}

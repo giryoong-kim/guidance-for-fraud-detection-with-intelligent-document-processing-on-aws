@@ -1,0 +1,150 @@
+{
+    "class": "Insurance Evidence",
+    "description": "This is an evidence of property insurance document that provides details about the insurance policy, coverage, and additional insured information.",
+    "definitions": {
+        "COVERAGE_DETAILS": {
+            "properties": {
+                "coverageperilsforms": {
+                    "type": "string",
+                    "instruction": "The types of coverage, perils, and policy forms included"
+                },
+                "amount_of_insurance": {
+                    "type": "string",
+                    "instruction": "The amount of insurance coverage for each type of coverage"
+                },
+                "deductible": {
+                    "type": "string",
+                    "instruction": "The deductible amount for each type of coverage"
+                }
+            }
+        },
+        "MORTGAGEE_DETAILS": {
+            "properties": {
+                "mortgagee_name": {
+                    "type": "string",
+                    "instruction": "The name of the mortgagee"
+                },
+                "mortgagee_address": {
+                    "type": "string",
+                    "instruction": "The address of the mortgagee"
+                },
+                "loan_number": {
+                    "type": "string",
+                    "instruction": "The loan number associated with the mortgagee"
+                }
+            }
+        },
+        "BILLING_DETAILS": {
+            "properties": {
+                "payment_remittance": {
+                    "type": "string",
+                    "instruction": "The address to send premium payments"
+                },
+                "payment_method": {
+                    "type": "string",
+                    "instruction": "The method of payment for the premium"
+                },
+                "full_term_premium": {
+                    "type": "number",
+                    "instruction": "The total premium amount for the full policy term"
+                },
+                "amount_paid": {
+                    "type": "number",
+                    "instruction": "The amount of premium that has been paid"
+                },
+                "amount_due": {
+                    "type": "number",
+                    "instruction": "The remaining premium amount due"
+                },
+                "payment_due_date": {
+                    "type": "string",
+                    "instruction": "The date the premium payment is due"
+                }
+            }
+        },
+        "INQUIRIES_CONTACT": {
+            "properties": {
+                "policy_updates": {
+                    "type": "string",
+                    "instruction": "Contact information for making policy updates"
+                },
+                "billing_&_payment": {
+                    "type": "string",
+                    "instruction": "Contact information for billing and payment inquiries"
+                },
+                "invoice_&_coverage": {
+                    "type": "string",
+                    "instruction": "Contact information for invoice and coverage inquiries"
+                },
+                "customer_portal": {
+                    "type": "string",
+                    "instruction": "URL for the customer portal to access account information"
+                }
+            }
+        }
+    },
+    "properties": {
+        "effective_date": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "The date the insurance policy becomes effective"
+        },
+        "expiration_date": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "The date the insurance policy expires"
+        },
+        "policy_number": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "The unique identifier for the insurance policy"
+        },
+        "insured_name": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "The name of the insured person or entity"
+        },
+        "insured_address": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "The address of the insured person or entity"
+        },
+        "additional_insured": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "The name of any additional insured parties"
+        },
+        "property_location": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "The address of the insured property"
+        },
+        "coverage_details": {
+            "$ref": "#/definitions/COVERAGE_DETAILS"
+        },
+        "remarks": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "Any additional remarks or notes about the policy"
+        },
+        "premium_amount": {
+            "type": "number",
+            "inferenceType": "explicit",
+            "instruction": "The total premium amount for the policy"
+        },
+        "mortgagee_information": {
+            "$ref": "#/definitions/MORTGAGEE_DETAILS"
+        },
+        "authorized_representative": {
+            "type": "string",
+            "inferenceType": "explicit",
+            "instruction": "The name of the authorized representative"
+        },
+        "billing_information": {
+            "$ref": "#/definitions/BILLING_DETAILS"
+        },
+        "inquiries_contact_information": {
+            "$ref": "#/definitions/INQUIRIES_CONTACT"
+        }
+    }
+}
