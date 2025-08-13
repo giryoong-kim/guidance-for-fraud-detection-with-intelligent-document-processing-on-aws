@@ -38,7 +38,7 @@ function validateFiles(files) {
   return undefined;
 }
 
-export default function Create(token) {
+export default function Create({ token }) {
   const [files, setFiles] = React.useState([]);
   const [claimId, setClaimId] = React.useState("");
   const [submitted, setSubmitted] = React.useState(false);
@@ -107,24 +107,34 @@ export default function Create(token) {
                     }
                     uploadFiles(files, claimId, token);
                     // Invoke API to start SFN to process documents
-                    var response = fetch(
-                      API_ENDPOINT +
-                        "/start-claim-processing?claim_id=" +
-                        claimId,
-                      {
-                        method: "GET",
-                        headers: {
-                          Authorization: token.token,
-                          "Access-Control-Allow-Origin": "*",
-                          "Access-Control-Allow-Credentials": "true",
-                        },
-                      }
-                    )
-                      .then((response) => response.json())
-                      .then((data) => {
+                    const startProcessing = async () => {
+                      try {
+                        const response = await fetch(
+                          API_ENDPOINT+"/start-claim-processing?claim_id=" +
+                            claimId,
+                          {
+                            method: "GET",
+                            headers: {
+                              'Authorization': token.token,
+                              'Content-Type': 'application/json',
+                            },
+                          }
+                        );
+                        
+                        if (!response.ok) {
+                          throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        
+                        const data = await response.json();
+                        console.log('Processing started:', data);
                         setSuccesfulSubmission(true);
-                      });
-                    console.log(response);
+                      } catch (error) {
+                        console.error('Error starting claim processing:', error);
+                        // You might want to show an error message to the user here
+                      }
+                    };
+                    
+                    startProcessing();
                   }}
                 >
                   Submit

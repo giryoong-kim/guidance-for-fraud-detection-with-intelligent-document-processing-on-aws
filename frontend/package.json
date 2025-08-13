@@ -3,15 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@aws-amplify/ui-react": "^5.3.1",
     "@cloudscape-design/components": "^3.0.885",
     "@cloudscape-design/global-styles": "^1.0.35",
+    "aws-amplify": "^5.3.11",
     "cra-template": "1.2.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-markdown": "^9.1.0",
     "react-router-dom": "^6.22.0",
     "react-scripts": "^5.0.1",
-    "@aws-amplify/ui-react": "^5.3.1",
-    "aws-amplify": "^5.3.11"
+    "remark-gfm": "^4.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -39,5 +41,6 @@
   },
   "devDependencies": {
     "web-vitals": "^4.2.4"
-  }
+  },
+  "proxy": "https://wrl1rv7mq1.execute-api.us-west-2.amazonaws.com"
 }

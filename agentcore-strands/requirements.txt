@@ -1,0 +1,8 @@
+strands-agents
+strands-agents-tools
+ddgs
+boto3
+mem0ai
+opensearch-py
+faiss-cpu
+bedrock_agentcore

@@ -1,0 +1,30 @@
+default_agent: insurance_claims_automation
+agents:
+  insurance_claims_automation:
+    name: insurance_claims_automation
+    entrypoint: /Users/giryoong/Projects/github/guidance-for-fraud-detection-with-intelligent-document-processing-on-aws/agentcore-strands/main.py
+    platform: linux/arm64
+    container_runtime: finch
+    aws:
+      execution_role: arn:aws:iam::670934798598:role/AgentCoreRuntimeRole-insurance-claims-automation
+      execution_role_auto_create: false
+      account: '670934798598'
+      region: us-west-2
+      ecr_repository: 670934798598.dkr.ecr.us-west-2.amazonaws.com/bedrock-agentcore-insurance_claims_automation
+      ecr_auto_create: false
+      network_configuration:
+        network_mode: PUBLIC
+      protocol_configuration:
+        server_protocol: HTTP
+      observability:
+        enabled: true
+    bedrock_agentcore:
+      agent_id: insurance_claims_automation-HOyY6rBTuz
+      agent_arn: arn:aws:bedrock-agentcore:us-west-2:670934798598:runtime/insurance_claims_automation-HOyY6rBTuz
+      agent_session_id: null
+    codebuild:
+      project_name: bedrock-agentcore-insurance_claims_automation-builder
+      execution_role: arn:aws:iam::670934798598:role/AmazonBedrockAgentCoreSDKCodeBuild-us-west-2-c23b721d05
+      source_bucket: bedrock-agentcore-codebuild-sources-670934798598-us-west-2
+    authorizer_configuration: null
+    oauth_configuration: null

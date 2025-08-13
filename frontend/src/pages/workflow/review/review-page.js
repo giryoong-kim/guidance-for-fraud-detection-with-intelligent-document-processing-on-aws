@@ -19,39 +19,58 @@ import {
 import { APP_NAME } from "../../../common/constants";
 import BaseAppLayout from "../../../components/base-app-layout";
 
-// Script to invoke GET https://xxxx.execute-api.us-west-2.amazonaws.com/get-claims
+// Script to invoke GET API for claims
 const getClaims = async (token) => {
-  // add headers to the request including Access-Control-Allow-Origin
-  const headers = {
-    Authorization: token.token,
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Credentials": "true",
-  };
-  // Invoket API using GET method, adding headres
-  const response = await fetch(
-    API_ENDPOINT + "/get-claims",
-    {
+  try {
+    console.log("Fetching claims with token:", token);
+    const headers = {
+      Authorization: token.token,
+      "Content-Type": "application/json",
+    };
+
+    const response = await fetch(API_ENDPOINT + "/get-claims", {
       method: "GET",
       headers: headers,
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  );
-  //const response = await fetch('https://xxxxx.execute-api.us-west-2.amazonaws.com/get-claims', headers = headers);
-  const data = await response.json();
-  return data;
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching claims:", error);
+    throw error;
+  }
 };
 
-export default function Review(token) {
+export default function Review({ token }) {
   //const onFollow = useOnFollow();
   const [claims, setClaims] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
-      getClaims(token).then((data) => setClaims(data))
-  const reload = () => {
-      getClaims(token).then((data) => setClaims(data))
-  }
-  
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const reload = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await getClaims(token);
+      setClaims(data);
+    } catch (err) {
+      setError(err.message);
+      console.error("Failed to load claims:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   React.useEffect(() => {
-    reload();
-  }, []);
+    if (token) {
+      reload();
+    }
+  }, [token]);
 
   return (
     <BaseAppLayout
@@ -75,7 +94,18 @@ export default function Review(token) {
       content={
         <ContentLayout header={<Header variant="h1">Review claims</Header>}>
           <SpaceBetween size="l">
+            {error && (
+              <Alert
+                statusIconAriaLabel="Error"
+                type="error"
+                header="Failed to load claims"
+                action={<Button onClick={reload}>Retry</Button>}
+              >
+                {error}
+              </Alert>
+            )}
             <Table
+              loading={loading}
               //loading = {reload()}
               renderAriaLive={({ firstIndex, lastIndex, totalItemsCount }) =>
                 `Displaying items ${firstIndex} to ${lastIndex} of ${totalItemsCount}`
@@ -93,7 +123,11 @@ export default function Review(token) {
                 {
                   id: "claimId",
                   header: "Claim ID",
-                  cell: (item) => <Link href={"/workflow/review/" + item.claimId}>{item.claimId}</Link>,
+                  cell: (item) => (
+                    <Link href={"/workflow/review/" + item.claimId}>
+                      {item.claimId}
+                    </Link>
+                  ),
                   sortingField: "claimId",
                   isRowHeader: true,
                 },
@@ -146,13 +180,7 @@ export default function Review(token) {
                 />
               }*/
               header={
-                <Header
-                  counter={
-                    " ("+claims.length+") "
-                  }
-                >
-                  Claims
-                </Header>
+                <Header counter={" (" + claims.length + ") "}>Claims</Header>
               }
               //pagination={<Pagination currentPageIndex={1} pagesCount={2} />}
               preferences={

@@ -4,7 +4,7 @@ import { Mode } from "@cloudscape-design/global-styles";
 //import { StorageHelper } from "../common/helpers/storage-helper";
 import { APP_NAME } from "../common/constants";
 
-export default function GlobalHeader(signOut) {
+export default function GlobalHeader({ signOut, user }) {
   //const [theme, setTheme] = useState<Mode>(StorageHelper.getTheme());
 
   /*const onChangeThemeClick = () => {
@@ -14,6 +14,29 @@ export default function GlobalHeader(signOut) {
       setTheme(StorageHelper.applyTheme(Mode.Dark));
     }
   };*/
+
+  const utilities = [
+    {
+      type: "button",
+      //text: theme === Mode.Dark ? "Light Mode" : "Dark Mode",
+      //onClick: onChangeThemeClick,
+    }
+  ];
+
+  // Add user menu if user is available
+  if (user && signOut) {
+    utilities.push({
+      type: "menu-dropdown",
+      text: user.attributes?.email || user.username || "User",
+      items: [
+        {
+          id: "signout",
+          text: "Sign out",
+          onClick: signOut
+        }
+      ]
+    });
+  }
 
   return (
     <div
@@ -25,15 +48,8 @@ export default function GlobalHeader(signOut) {
           href: "/",
           logo: { src: "/images/logo.png", alt: `${APP_NAME} Logo` },
         }}
-        utilities={[
-          {
-            type: "button",
-            //text: theme === Mode.Dark ? "Light Mode" : "Dark Mode",
-            //onClick: onChangeThemeClick,
-          },
-        ]}
+        utilities={utilities}
       />
-
     </div>
   );
 }
