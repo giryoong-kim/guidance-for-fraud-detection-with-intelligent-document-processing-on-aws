@@ -1,16 +1,16 @@
-default_agent: insurance_claims_automation
+default_agent: insurance_claims_automation_ue1
 agents:
-  insurance_claims_automation:
-    name: insurance_claims_automation
+  insurance_claims_automation_ue1:
+    name: insurance_claims_automation_ue1
     entrypoint: /Users/giryoong/Projects/github/guidance-for-fraud-detection-with-intelligent-document-processing-on-aws/agentcore-strands/main.py
     platform: linux/arm64
-    container_runtime: finch
+    container_runtime: none
     aws:
-      execution_role: arn:aws:iam::670934798598:role/AgentCoreRuntimeRole-insurance-claims-automation
+      execution_role: arn:aws:iam::186297945978:role/AgentCoreRuntimeRole-insurance-claims-automation
       execution_role_auto_create: false
-      account: '670934798598'
-      region: us-west-2
-      ecr_repository: 670934798598.dkr.ecr.us-west-2.amazonaws.com/bedrock-agentcore-insurance_claims_automation
+      account: '186297945978'
+      region: us-east-1
+      ecr_repository: 186297945978.dkr.ecr.us-east-1.amazonaws.com/bedrock-agentcore-insurance_claims_automation_ue1
       ecr_auto_create: false
       network_configuration:
         network_mode: PUBLIC
@@ -19,12 +19,12 @@ agents:
       observability:
         enabled: true
     bedrock_agentcore:
-      agent_id: insurance_claims_automation-HOyY6rBTuz
-      agent_arn: arn:aws:bedrock-agentcore:us-west-2:670934798598:runtime/insurance_claims_automation-HOyY6rBTuz
+      agent_id: insurance_claims_automation_ue1-IgwaVLCBIk
+      agent_arn: arn:aws:bedrock-agentcore:us-east-1:186297945978:runtime/insurance_claims_automation_ue1-IgwaVLCBIk
       agent_session_id: null
     codebuild:
-      project_name: bedrock-agentcore-insurance_claims_automation-builder
-      execution_role: arn:aws:iam::670934798598:role/AmazonBedrockAgentCoreSDKCodeBuild-us-west-2-c23b721d05
-      source_bucket: bedrock-agentcore-codebuild-sources-670934798598-us-west-2
+      project_name: bedrock-agentcore-insurance_claims_automation_ue1-builder
+      execution_role: arn:aws:iam::186297945978:role/AmazonBedrockAgentCoreSDKCodeBuild-us-east-1-2c38af9c4b
+      source_bucket: bedrock-agentcore-codebuild-sources-186297945978-us-east-1
     authorizer_configuration: null
     oauth_configuration: null

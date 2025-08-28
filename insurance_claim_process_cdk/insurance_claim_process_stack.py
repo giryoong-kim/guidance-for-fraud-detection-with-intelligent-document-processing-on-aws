@@ -33,4 +33,5 @@ class InsuranceClaimProcessStack(Stack):
         sns = NotificationStack(workflow, "InsuranceClaimProcessSNS")
 
         frontend = FrontEndStack(self, "InsuranceClaimProcessFrontEnd")
-        api = ApiStack(self, "InsuranceClaimProcessApi")
+        # Pass the lambda stack to the API stack so it can reference the proxy functions
+        api = ApiStack(self, "InsuranceClaimProcessApi", lambda_stack=lambda_)

@@ -168,3 +168,60 @@ class LambdaStack(NestedStack):
                 ],
             )
         )
+
+        # File Proxy Lambda Function
+        with open(
+            "insurance_claim_process_cdk/lambdas/file_proxy/app.py",
+            encoding="utf8",
+        ) as fp:
+            handler_code = fp.read()
+   
+        self.lambda_file_proxy = lambda_.Function(
+            self,
+            "FileProxy",
+            function_name="insuranceclaimFileProxy",
+            code=lambda_.InlineCode(handler_code),
+            handler="index.lambda_handler",
+            timeout=Duration.seconds(30),
+            runtime=lambda_.Runtime.PYTHON_3_13
+        )
+        lambda_role = self.lambda_file_proxy.role
+        # Add S3 permissions for file proxy
+        lambda_role.add_to_policy(
+            iam.PolicyStatement(
+                actions=["s3:GetObject", "s3:ListBucket"],
+                resources=[
+                    f"arn:aws:s3:::insuranceclaim-input-{self.account}-{self.region}",
+                    f"arn:aws:s3:::insuranceclaim-input-{self.account}-{self.region}/*",
+                    f"arn:aws:s3:::insuranceclaim-output-{self.account}-{self.region}",
+                    f"arn:aws:s3:::insuranceclaim-output-{self.account}-{self.region}/*",
+                ],
+            )
+        )
+
+        # Upload Proxy Lambda Function
+        with open(
+            "insurance_claim_process_cdk/lambdas/upload_proxy/app.py",
+            encoding="utf8",
+        ) as fp:
+            handler_code = fp.read()
+   
+        self.lambda_upload_proxy = lambda_.Function(
+            self,
+            "UploadProxy",
+            function_name="insuranceclaimUploadProxy",
+            code=lambda_.InlineCode(handler_code),
+            handler="index.lambda_handler",
+            timeout=Duration.seconds(60),
+            runtime=lambda_.Runtime.PYTHON_3_13
+        )
+        lambda_role = self.lambda_upload_proxy.role
+        # Add S3 permissions for upload proxy
+        lambda_role.add_to_policy(
+            iam.PolicyStatement(
+                actions=["s3:PutObject", "s3:PutObjectAcl"],
+                resources=[
+                    f"arn:aws:s3:::insuranceclaim-input-{self.account}-{self.region}/*",
+                ],
+            )
+        )

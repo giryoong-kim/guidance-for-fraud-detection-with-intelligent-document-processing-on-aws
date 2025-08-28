@@ -9,13 +9,13 @@ import time
 from datetime import datetime
 
 # Configuration from .bedrock_agentcore.yaml
-AGENT_ID = "insurance_claims_automation-HOyY6rBTuz"
-AGENT_ARN = "arn:aws:bedrock-agentcore:us-west-2:670934798598:runtime/insurance_claims_automation-HOyY6rBTuz"
-REGION = "us-west-2"
+AGENT_ID = "insurance_claims_automation_d1-dDWWV7GuaS"
+AGENT_ARN = "arn:aws:bedrock-agentcore:us-east-1:670934798598:runtime/insurance_claims_automation_d1-dDWWV7GuaS"
+REGION = "us-east-1"
 ACCOUNT_ID = "670934798598"
 
 # Test claim ID
-TEST_CLAIM_ID = "dev-use-case-02"
+TEST_CLAIM_ID = "dev-use-case-deployment-test"
 
 
 def invoke_agent_core_runtime(claim_id: str, session_id: str = None):
@@ -46,11 +46,7 @@ def invoke_agent_core_runtime(claim_id: str, session_id: str = None):
         print("-" * 50)
 
         response = client.invoke_agent_runtime(
-            agentRuntimeArn=AGENT_ARN,
-            payload=json.dumps({
-                "claimId":TEST_CLAIM_ID
-                }
-            )
+            agentRuntimeArn=AGENT_ARN, payload=json.dumps({"claimId": TEST_CLAIM_ID})
         )
 
         print("✅ Agent Core invocation successful!")
@@ -63,29 +59,6 @@ def invoke_agent_core_runtime(claim_id: str, session_id: str = None):
         return None
 
 
-def check_agent_status():
-    """
-    Check the status of the Agent Core runtime.
-    """
-
-    client = boto3.client("bedrock-agentcore", region_name=REGION)
-
-    try:
-        print("🔍 Checking Agent Core status...")
-
-        # Try to get agent information
-        response = client.get_agent(agentId=AGENT_ID)
-
-        print("✅ Agent Core is accessible!")
-        print(f"📋 Agent Details: {json.dumps(response, indent=2, default=str)}")
-
-        return True
-
-    except Exception as e:
-        print(f"❌ Error checking agent status: {str(e)}")
-        return False
-
-
 def main():
     """
     Main function to test Agent Core invocation methods.
@@ -93,12 +66,6 @@ def main():
 
     print("🏥 Insurance Claim Agent Core Runtime Test")
     print("=" * 60)
-
-    # Check agent status first
-    if not check_agent_status():
-        print("⚠️  Agent Core might not be accessible. Continuing with tests...")
-
-    print("\n" + "=" * 60)
 
     # Test 1: Standard runtime invocation
     print("🧪 Test 1: Standard Agent Core Runtime Invocation")

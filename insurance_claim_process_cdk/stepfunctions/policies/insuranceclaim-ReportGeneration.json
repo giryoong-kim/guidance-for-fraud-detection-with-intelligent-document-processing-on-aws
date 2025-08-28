@@ -37,9 +37,9 @@
       ],
       "Resource": [
         "arn:aws:bedrock:us-east-1::foundation-model/*",
-        "arn:aws:bedrock:us-east-2::foundation-model/*",
+        "arn:aws:bedrock:us-east-1::foundation-model/*",
         "arn:aws:bedrock:us-west-1::foundation-model/*",
-        "arn:aws:bedrock:us-west-2::foundation-model/*"
+        "arn:aws:bedrock:us-east-1::foundation-model/*"
       ],
       "Condition": {
         "StringLike": {

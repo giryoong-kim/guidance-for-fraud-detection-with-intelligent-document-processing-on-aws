@@ -1,5 +1,6 @@
-strands-agents
-strands-agents-tools
+strands-agents==1.4.0
+strands-agents-tools==0.2.3
+strands-agents-builder==0.1.7
 ddgs
 boto3
 mem0ai

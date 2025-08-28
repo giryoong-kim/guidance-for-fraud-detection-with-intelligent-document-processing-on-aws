@@ -24,8 +24,9 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 class ApiStack(Stack):
-    def __init__(self, scope: Construct, id: str, **kwargs) -> None:
+    def __init__(self, scope: Construct, id: str, lambda_stack=None, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
+        self.lambda_stack = lambda_stack
 
         # Add suppressions for the AwsSolutions-IAM4 finding
         cognito_user_pool_name = config["COGNITO"]["user_pool_name"]
@@ -318,6 +319,63 @@ class ApiStack(Stack):
             ],
             authorizer=authorizer,
         )
+
+        # Add proxy endpoints if lambda_stack is provided
+        if self.lambda_stack and hasattr(self.lambda_stack, 'lambda_file_proxy'):
+            # GET /file-proxy - Serve S3 files without CORS issues
+            file_proxy = api.root.add_resource("file-proxy")
+            file_proxy.add_method(
+                "GET",
+                aws_apigateway.LambdaIntegration(
+                    self.lambda_stack.lambda_file_proxy,
+                    integration_responses=[
+                        aws_apigateway.IntegrationResponse(
+                            status_code="200",
+                            response_parameters={
+                                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                                "method.response.header.Content-Type": "integration.response.header.Content-Type"
+                            }
+                        )
+                    ]
+                ),
+                method_responses=[
+                    aws_apigateway.MethodResponse(
+                        status_code="200",
+                        response_parameters={
+                            "method.response.header.Access-Control-Allow-Origin": True,
+                            "method.response.header.Content-Type": True
+                        }
+                    )
+                ],
+                authorizer=authorizer,
+            )
+
+        if self.lambda_stack and hasattr(self.lambda_stack, 'lambda_upload_proxy'):
+            # POST /upload-file - Upload files via proxy to avoid CORS issues
+            upload_file = api.root.add_resource("upload-file")
+            upload_file.add_method(
+                "POST",
+                aws_apigateway.LambdaIntegration(
+                    self.lambda_stack.lambda_upload_proxy,
+                    integration_responses=[
+                        aws_apigateway.IntegrationResponse(
+                            status_code="200",
+                            response_parameters={
+                                "method.response.header.Access-Control-Allow-Origin": "'*'"
+                            }
+                        )
+                    ]
+                ),
+                method_responses=[
+                    aws_apigateway.MethodResponse(
+                        status_code="200",
+                        response_parameters={
+                            "method.response.header.Access-Control-Allow-Origin": True
+                        }
+                    )
+                ],
+                authorizer=authorizer,
+            )
         # Output the API URL
         CfnOutput(self, "UserPoolId", value=user_pool.user_pool_id , description="Cognito User Pool ID")
         CfnOutput(self, "UserPoolClientId", value=user_pool_client.user_pool_client_id , description="Cognito User Pool Client ID")

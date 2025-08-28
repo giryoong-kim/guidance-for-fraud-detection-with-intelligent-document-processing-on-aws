@@ -7,9 +7,9 @@
       "Resource": [
         "<BDA_PROJECT_ARN>",
         "arn:aws:bedrock:us-east-1:<AWS_ACCOUNT>:data-automation-profile/us.data-automation-v1",
-        "arn:aws:bedrock:us-east-2:<AWS_ACCOUNT>:data-automation-profile/us.data-automation-v1",
+        "arn:aws:bedrock:us-east-1:<AWS_ACCOUNT>:data-automation-profile/us.data-automation-v1",
         "arn:aws:bedrock:us-west-1:<AWS_ACCOUNT>:data-automation-profile/us.data-automation-v1",
-        "arn:aws:bedrock:us-west-2:<AWS_ACCOUNT>:data-automation-profile/us.data-automation-v1"
+        "arn:aws:bedrock:us-east-1:<AWS_ACCOUNT>:data-automation-profile/us.data-automation-v1"
       ]
     },
     {

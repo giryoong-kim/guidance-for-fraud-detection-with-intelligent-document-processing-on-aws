@@ -5,7 +5,7 @@ import subprocess
 from sagemaker.tensorflow import TensorFlow
 from sagemaker.serverless import ServerlessInferenceConfig
 from sagemaker import get_execution_role
-REGION = "us-west-2"
+REGION = "us-east-1"
 
 # Create a boto3 session with specified AWS region
 boto3.setup_default_session(region_name=REGION)

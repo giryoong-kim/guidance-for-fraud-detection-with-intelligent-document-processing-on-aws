@@ -8,7 +8,7 @@ import json
 
 # Configuration
 AGENT_ID = "insurance_claim_agent-VYi75NEJUs"
-REGION = "us-west-2"
+REGION = "us-east-1"
 CLAIM_ID = "dev-use-case-01"
 
 def simple_invoke():

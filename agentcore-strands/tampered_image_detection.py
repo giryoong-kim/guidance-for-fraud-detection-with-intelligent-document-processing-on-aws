@@ -53,7 +53,7 @@ def check_image(image_s3_path, endpoint_name):
     X = X.reshape(-1, 128, 128, 3)
     
     data = {'instances': X.tolist()}
-    sagemaker_runtime = boto3.client("sagemaker-runtime", region_name="us-west-2")
+    sagemaker_runtime = boto3.client("sagemaker-runtime", region_name="us-east-1")
     # Gets inference from the model hosted at the specified endpoint:
     response = sagemaker_runtime.invoke_endpoint(
         EndpointName=endpoint_name, 
